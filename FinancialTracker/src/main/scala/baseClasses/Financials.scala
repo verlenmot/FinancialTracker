@@ -2,8 +2,6 @@ package baseClasses
 
 import com.github.nscala_time.time.Imports._
 
-import scala.reflect.ClassTag
-
 class Financials(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double) {
   def getName: String = name
   def getDescription: String = description
@@ -15,11 +13,13 @@ class Financials(private val name: String, private val description: String, priv
   def setBalance(newBalance: Double): Financials = new Financials(name, description, startDate, newBalance)
   def addBalance(amount: Double): Financials = new Financials(name, description, startDate, currentBalance + amount)
   def removeBalance(amount: Double): Financials = new Financials(name, description, startDate, currentBalance - amount)
-  def apply(): String = s"Type: ${this.getClass}/n Name: $name/n Description: $description/n StartDate: $startDate/n Balance: $currentBalance"
+  def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance"
 }
 
 case class Investment(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double)
-                      extends Financials(name, description, startDate: DateTime, currentBalance)
+                      extends Financials(name, description, startDate: DateTime, currentBalance) {
+  override def apply(): String = s"Type: Investment \n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance"
+}
 
 case class Savings(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double)
                       extends Financials(name, description, startDate: DateTime, currentBalance)
@@ -34,8 +34,8 @@ case class Budget(private val name: String, private val description: String, pri
   def setFrequency(newFrequency: String): Budget = this.copy(frequency = newFrequency)
   def setReached(condition: Boolean): Budget = this.copy(reached = condition)
   def getRenewalDate(): DateTime = ???
-  override def apply(): String = s"Type: ${this.getClass}/n Name: $name/n Description: $description/n StartDate: $startDate/n Balance: $currentBalance/n" +
-    s"Budget: $budgetedBalance/n Frequency: $frequency/n Reached: $reached"
+  override def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance\n" +
+    s"Budget: $budgetedBalance\n Frequency: $frequency\n Reached: $reached"
 }
 
 case class Debt(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double,
@@ -49,8 +49,8 @@ case class Debt(private val name: String, private val description: String, priva
   def setInterestPercentage(newInterestPercentage: Double): Debt = this.copy(interestPercentage = newInterestPercentage)
   def setFrequency(newFrequency: String): Debt = this.copy(frequency = newFrequency)
   def setPaid(condition: Boolean): Debt = this.copy(paid = condition)
-  override def apply(): String = s"Type: ${this.getClass}/n Name: $name/n Description: $description/n StartDate: $startDate/n Balance: $currentBalance/n" +
-    s"EndDate: $endDate/n InterestPercentage: $interestPercentage/n Frequency: $frequency/n Paid: $paid"
+  override def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance\n" +
+    s"EndDate: $endDate\n InterestPercentage: $interestPercentage\n Frequency: $frequency\n Paid: $paid"
 }
 
 case class Goal(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double,
@@ -64,6 +64,6 @@ case class Goal(private val name: String, private val description: String, priva
   def setEndDate(newEndDate: String): Goal = this.copy(endDate = DateTime.parse(newEndDate))
   def setReached(condition: Boolean): Goal = this.copy(reached = condition)
   def setConsumed(condition: Boolean): Goal = this.copy(consumed = condition)
-  override def apply(): String = s"Type: ${this.getClass}/n Name: $name/n Description: $description/n StartDate: $startDate/n Balance: $currentBalance/n" +
-    s"Target: $target/n EndDate: $endDate/n Reached: $reached/n Consumed: $consumed"
+  override def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance\n" +
+    s"Target: $target\n EndDate: $endDate\n Reached: $reached\n Consumed: $consumed"
 }

@@ -19,11 +19,11 @@ case class Pool[A <: Financials: ClassTag](private val name: String, private val
     tailTotal()
   }
   def detailedListing(): String = {
-    def tailDetailed(n: Int = 0, accumulator: String = ""): String = {
+    def tailDetailed(n: Int = 0, accumulator: String = s"Pool: ${this.getName} - "): String = {
       if (n == pool.length) accumulator
-      else tailDetailed(n + 1, accumulator + s"Name: ${pool(n).getName} - Balance: ${pool(n).getBalance}/n")
+      else tailDetailed(n + 1, accumulator + s"Name: ${pool(n).getName} - Balance: ${pool(n).getBalance}\n")
     }
     tailDetailed()
   }
-  def apply(): String = s"Type: ${this.getClass}/n Name: $name/n Description: $description/n Items: ${this.listItems}/n Active: $active"
+  def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n Items: ${this.listItems}\n Active: $active"
 }

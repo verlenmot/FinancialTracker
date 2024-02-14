@@ -25,17 +25,19 @@ case class Savings(private val name: String, private val description: String, pr
                       extends Financials(name, description, startDate: DateTime, currentBalance)
 
 case class Budget(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double,
-                  private val budgetedBalance: Double, private val frequency: String, private val reached: Boolean)
+                  private val budget: Double, private val frequency: String, private val reached: Boolean)
                   extends Financials(name, description, startDate, currentBalance) {
-  def getBudgetedBalance: Double = budgetedBalance
+  def getBudgetedBalance: Double = budget
   def getFrequency: String = frequency
   def isReached(): Boolean = reached
-  def setBudgetedBalance(newAmount: Int): Budget = this.copy(budgetedBalance = newAmount)
+  def setBudgetedBalance(newAmount: Int): Budget = this.copy(budget = newAmount)
   def setFrequency(newFrequency: String): Budget = this.copy(frequency = newFrequency)
   def setReached(condition: Boolean): Budget = this.copy(reached = condition)
+  def budgetConsumed(): Double = this.budget - this.currentBalance
+  def budgetRemaining(): Double = this.currentBalance
   def getRenewalDate(): DateTime = ???
   override def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n StartDate: $startDate\n Balance: $currentBalance\n" +
-    s"Budget: $budgetedBalance\n Frequency: $frequency\n Reached: $reached"
+    s"Budget: $budget\n Frequency: $frequency\n Reached: $reached"
 }
 
 case class Debt(private val name: String, private val description: String, private val startDate: DateTime, private val currentBalance: Double,

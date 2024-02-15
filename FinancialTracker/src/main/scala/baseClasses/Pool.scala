@@ -3,8 +3,7 @@ package baseClasses
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
-case class Pool[A <: Financials](private val name: String, private val description: String,
-                                 private val pool: List[A], private val active: Boolean) {
+case class Pool[A <: Financials](private val name: String, private val description: String, private val pool: List[A]) {
   def getName: String = name
   def getDescription: String = description
   def setName(newName: String): Pool[A] = this.copy(name = newName)
@@ -29,5 +28,5 @@ case class Pool[A <: Financials](private val name: String, private val descripti
     }
     describeFinancialsTail()
   }
-  def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n Financials: ${this.listFinancials()}\n Active: $active"
+  def apply(): String = s"Type: ${this.getClass}\n Name: $name\n Description: $description\n Financials: ${this.listFinancials()}"
 }

@@ -10,11 +10,15 @@ case class Pool[A <: Financials](private val name: String, private val descripti
   def setDescription(newDescription: String): Pool[A] = this.copy(description = newDescription)
   def addFinancials(item: A): Pool[A] = this.copy(pool = pool :+ item)
   def removeFinancials(item: A): Pool[A] = this.copy(pool = pool.filter(_ == item))
-  def poolTotal(): Double = {
+  def poolTotal(): Map[String, Double] = {
     @tailrec
-    def poolTotalTail(n: Int = 0, accumulator: Double = 0): Double = {
+    def poolTotalTail(n: Int = 0, accumulator: Map[String, Double] = Map.empty): Map[String, Double] = {
       if (n == pool.length) accumulator
-      else poolTotalTail(n + 1, accumulator + pool(n).getBalance)
+      else accumulator.contains(pool(n).getCurrency) match {
+        case true => poolTotalTail(n + 1, accumulator.updated(pool(n).getCurrency, accumulator(pool(n).getCurrency) + pool(n).getBalance))
+        case false => poolTotalTail(n + 1, accumulator)
+      }
+      poolTotalTail()
     }
 
     poolTotalTail()

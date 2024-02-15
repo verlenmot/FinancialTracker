@@ -21,9 +21,9 @@ case class Pool[A <: Financials](private val name: String, private val descripti
   def listFinancials(): String = pool.mkString(",")
   def describeFinancials(): String = {
     @tailrec
-    def describeFinancialsTail(n: Int = 0, accumulator: String = s"Pool: ${this.getName} - "): String = {
+    def describeFinancialsTail(n: Int = 0, accumulator: String = s"Pool: ${this.getName}\n"): String = {
       if (n == pool.length) accumulator
-      else describeFinancialsTail(n + 1, accumulator + s"Name: ${pool(n).getName} - Balance: ${pool(n).getCurrency}${pool(n).getBalance}\n")
+      else describeFinancialsTail(n + 1, accumulator + s" Name: ${pool(n).getName} - Balance: ${pool(n).getCurrency}${pool(n).getBalance}\n")
     }
     describeFinancialsTail()
   }

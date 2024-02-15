@@ -27,7 +27,11 @@ class Financials(private val name: String, private val description: String, priv
 
 case class Sight(private val name: String, private val description: String, private val startDate: DateTime,
                  private val currency: String, private val balance: Double)
-  extends Financials(name, description, startDate, currency, balance)
+                  extends Financials(name, description, startDate, currency, balance)
+
+case class Cash(private val name: String, private val description: String, private val startDate: DateTime,
+                      private val currency: String, private val balance: Double)
+                      extends Financials(name, description, startDate, currency, balance)
 case class Investment(private val name: String, private val description: String, private val startDate: DateTime,
                       private val currency: String, private val balance: Double)
                       extends Financials(name, description, startDate, currency, balance) {

@@ -44,6 +44,8 @@ case class Account(private val name: String, private val description: String, pr
   def accountNet(): Map[String, Double] = subtractMaps(accountDebit(), accountCredit())
   def poolsTotal[A <: Financials](list: List[Pool[A]]): Map[String, Double] = calculatePoolListTotal(list)
 
+  def test(): Map[String, Double] = calculatePoolListTotal(cash)
+
   def listAllPools(): String = {
     s"Cash: ${listSpecificPools(cash)}\n Sights: ${listSpecificPools(sights)}\n Savings: ${listSpecificPools(savings)}\n " +
       s"Investments: ${listSpecificPools(investments)}\n + Budgets: ${listSpecificPools(budgets)}\n " +
@@ -59,9 +61,9 @@ case class Account(private val name: String, private val description: String, pr
   def listSpecificFinancials[A <: Financials](list: List[Pool[A]]): String = listPoolListFinancials(list)
 
   def describeAllFinancials(): String = {
-    s"Cash: ${describePoolListFinancials(cash)}\n Sights: ${describePoolListFinancials(sights)}\n Savings: ${describePoolListFinancials(savings)}\n " +
-      s"Investments: ${describePoolListFinancials(investments)}\n + Budgets: ${describePoolListFinancials(budgets)}\n " +
-      s"Goals: ${describePoolListFinancials(goals)}\n Debts: ${describePoolListFinancials(debts)}\n"
+    s"\n---Financial Overview---\n\nCash:\n\n${describePoolListFinancials(cash)}Sights:\n\n${describePoolListFinancials(sights)}Savings:\n\n${describePoolListFinancials(savings)}" +
+      s"Investments:\n\n${describePoolListFinancials(investments)}Budgets:\n\n${describePoolListFinancials(budgets)}" +
+      s"Goals:\n\n${describePoolListFinancials(goals)}Debts:\n\n${describePoolListFinancials(debts)}"
   }
   def describeSpecificFinancials[A <: Financials](list: List[Pool[A]]): String = describePoolListFinancials(list)
   def apply(): String = s"Type: Account\n Name: $name\n Description: $description\n Unallocated: $unallocated\n Cash: $cash\n " +
@@ -77,10 +79,10 @@ case class Account(private val name: String, private val description: String, pr
   }
 
   private def addMaps(map1: Map[String, Double], map2: Map[String, Double]): Map[String, Double] = {
-    map1.map {
-        case (key, value1) =>
-          key -> (value1 + map2.getOrElse(key, 0.00))
-      }
+    (map1.keySet ++ map2.keySet).map {
+        key =>
+          key -> (map1.getOrElse(key, 0.0) + map2.getOrElse(key, 0.0))
+      }.toMap
     }
 
   private def recursiveAddMaps(list: List[Map[String, Double]]): Map[String, Double] = {
@@ -115,7 +117,7 @@ case class Account(private val name: String, private val description: String, pr
     @tailrec
     def describePoolListFinancialsTail(n: Int = 0, accumulator: String = ""): String = {
       if (n == list.length) accumulator
-      else describePoolListFinancialsTail(n + 1, accumulator + s"${list(n).describeFinancials()}")
+      else describePoolListFinancialsTail(n + 1, accumulator + s"${list(n).describeFinancials()}\n")
     }
     describePoolListFinancialsTail()
   }

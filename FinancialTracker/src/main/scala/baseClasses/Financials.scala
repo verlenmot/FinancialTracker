@@ -40,6 +40,7 @@ case class Investment(private val name: String, private val description: String,
 
 case class Savings(private val name: String, private val description: String, private val startDate: DateTime,
                    private val currency: String, private val balance: Double)
+                    extends Financials(name, description, startDate, currency, balance)
 
 case class Budget(private val name: String, private val description: String, private val startDate: DateTime,
                   private val currency: String, private val balance: Double, private val budget: Double,

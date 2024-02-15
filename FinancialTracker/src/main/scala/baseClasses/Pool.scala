@@ -14,7 +14,7 @@ case class Pool[A <: Financials](private val name: String, private val descripti
     @tailrec
     def poolTotalTail(n: Int = 0, accumulator: Map[String, Double] = Map.empty): Map[String, Double] = {
       if (n == pool.length) accumulator
-      else poolTotalTail(n + 1, accumulator.updated(pool(n).getCurrency, accumulator.getOrElse(pool(n).getCurrency, 0) + pool(n).getBalance))
+      else poolTotalTail(n + 1, accumulator.updated(pool(n).getCurrency, accumulator.getOrElse(pool(n).getCurrency, 0.00) + pool(n).getBalance))
     }
     poolTotalTail()
   }

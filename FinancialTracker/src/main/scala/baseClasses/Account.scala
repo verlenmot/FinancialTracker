@@ -38,11 +38,11 @@ case class Account(private val name: String, private val description: String, pr
       case other: (_, _) => throw new RuntimeException("Type mismatch")
     }
   }
-  def accountDebit(): Double = calculatePoolListTotal(cash) + calculatePoolListTotal(sights) + calculatePoolListTotal(savings) +
-    calculatePoolListTotal(investments) + calculatePoolListTotal(budgets) + calculatePoolListTotal(goals)
-  def accountCredit(): Double = calculatePoolListTotal(debts)
-  def accountNet(): Double = accountDebit() - accountCredit()
-  def poolsTotal[A <: Financials](list: List[Pool[A]]): Double = calculatePoolListTotal(list)
+  def accountDebit(): Map[String, Double] = recursiveAddMaps(List(calculatePoolListTotal(cash),calculatePoolListTotal(sights),
+    calculatePoolListTotal(savings), calculatePoolListTotal(investments), calculatePoolListTotal(budgets), calculatePoolListTotal(goals)))
+  def accountCredit(): Map[String, Double] = calculatePoolListTotal(debts)
+  def accountNet(): Map[String, Double] = subtractMaps(accountDebit(), accountCredit())
+  def poolsTotal[A <: Financials](list: List[Pool[A]]): Map[String, Double] = calculatePoolListTotal(list)
 
   def listAllPools(): String = {
     s"Cash: ${listSpecificPools(cash)}\n Sights: ${listSpecificPools(sights)}\n Savings: ${listSpecificPools(savings)}\n " +
@@ -63,17 +63,43 @@ case class Account(private val name: String, private val description: String, pr
       s"Investments: ${describePoolListFinancials(investments)}\n + Budgets: ${describePoolListFinancials(budgets)}\n " +
       s"Goals: ${describePoolListFinancials(goals)}\n Debts: ${describePoolListFinancials(debts)}\n"
   }
-  def describeSpecificFinancials(list: List[Pool[Savings]]): String = describePoolListFinancials(list)
+  def describeSpecificFinancials[A <: Financials](list: List[Pool[A]]): String = describePoolListFinancials(list)
   def apply(): String = s"Type: Account\n Name: $name\n Description: $description\n Unallocated: $unallocated\n Cash: $cash\n " +
     s"Sights: $sights\n Savings: $savings\n Investment: $investments\n Budgets: $budgets\n Goals: $goals\n Debts: $debts\n"
 
-  private def calculatePoolListTotal[A <: Financials](list: List[Pool[A]]): Double = {
+  private def calculatePoolListTotal[A <: Financials](list: List[Pool[A]]): Map[String, Double] = {
     @tailrec
-    def calculatePoolListTotalTail(n: Int = 0, accumulator: Double = 0): Double = {
+    def calculatePoolListTotalTail(n: Int = 0, accumulator: Map[String, Double] = Map.empty): Map[String, Double] = {
       if (n == list.length) accumulator
-      else calculatePoolListTotalTail(n + 1, accumulator + list(n).poolTotal)
+      else calculatePoolListTotalTail(n + 1, addMaps(accumulator, list(n).poolTotal))
     }
     calculatePoolListTotalTail()
+  }
+
+  private def addMaps(map1: Map[String, Double], map2: Map[String, Double]): Map[String, Double] = {
+    map1.map {
+        case (key, value1) =>
+          key -> (value1 + map2.getOrElse(key, 0.00))
+      }
+    }
+
+  private def recursiveAddMaps(list: List[Map[String, Double]]): Map[String, Double] = {
+    @tailrec
+    def recursiveAddMapsTail(n: Int = 0, accumulator: Map[String, Double] = Map.empty): Map[String, Double] = {
+      if (n == list.length) accumulator
+      else recursiveAddMapsTail(n + 1, addMaps(accumulator, list(n)))
+    }
+    recursiveAddMapsTail()
+  }
+
+  private def subtractMaps(map1: Map[String, Double], map2: Map[String, Double]): Map[String, Double] = {
+    val negativeMap = map2.map {
+      case (key, value) => key -> -value
+    }
+    map1.map {
+      case (key, value1) =>
+        key -> (value1 + negativeMap.getOrElse(key, 0.00))
+    }
   }
 
   private def listPoolListFinancials[A <: Financials](list: List[Pool[A]]): String = {

@@ -61,9 +61,9 @@ case class Account(private val name: String, private val description: String, pr
   def listSpecificFinancials[A <: Financials](list: List[Pool[A]]): String = listPoolListFinancials(list)
 
   def describeAllFinancials(): String = {
-    s"\n---Financial Overview---\n\nCash:\n\n${describePoolListFinancials(cash)}Sights:\n\n${describePoolListFinancials(sights)}Savings:\n\n${describePoolListFinancials(savings)}" +
-      s"Investments:\n\n${describePoolListFinancials(investments)}Budgets:\n\n${describePoolListFinancials(budgets)}" +
-      s"Goals:\n\n${describePoolListFinancials(goals)}Debts:\n\n${describePoolListFinancials(debts)}"
+    s"\n---Financial Overview---\n\n-Cash-\n\n${describePoolListFinancials(cash)}-Sights-\n\n${describePoolListFinancials(sights)}-Savings-\n\n${describePoolListFinancials(savings)}" +
+      s"-Investments-\n\n${describePoolListFinancials(investments)}-Budgets-\n\n${describePoolListFinancials(budgets)}" +
+      s"-Goals-\n\n${describePoolListFinancials(goals)}-Debts-\n\n${describePoolListFinancials(debts)}"
   }
   def describeSpecificFinancials[A <: Financials](list: List[Pool[A]]): String = describePoolListFinancials(list)
   def apply(): String = s"Type: Account\n Name: $name\n Description: $description\n Unallocated: $unallocated\n Cash: $cash\n " +
@@ -73,7 +73,7 @@ case class Account(private val name: String, private val description: String, pr
     @tailrec
     def calculatePoolListTotalTail(n: Int = 0, accumulator: Map[String, Double] = Map.empty): Map[String, Double] = {
       if (n == list.length) accumulator
-      else calculatePoolListTotalTail(n + 1, addMaps(accumulator, list(n).poolTotal))
+      else calculatePoolListTotalTail(n + 1, addMaps(accumulator, list(n).poolTotal()))
     }
     calculatePoolListTotalTail()
   }
